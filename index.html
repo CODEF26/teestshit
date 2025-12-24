@@ -3,132 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدخال البيانات | Codef</title>
+    <title>لوحة تحكم خطة 2026</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="apple-touch-icon" sizes="180x180" href="https://drive.google.com/uc?export=view&id=1JT1tY2fAF_YNxL_PNPG01m8D-2NGzk0W">
-<link rel="apple-touch-icon" sizes="152x152" href="https://drive.google.com/uc?export=view&id=1JT1tY2fAF_YNxL_PNPG01m8D-2NGzk0W">
-<link rel="apple-touch-icon" sizes="120x120" href="https://drive.google.com/uc?export=view&id=1JT1tY2fAF_YNxL_PNPG01m8D-2NGzk0W">
-<link rel="apple-touch-icon" sizes="76x76" href="https://drive.google.com/uc?export=view&id=1JT1tY2fAF_YNxL_PNPG01m8D-2NGzk0W">
-
-
+    
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f0f2f5; }
-        .form-card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-        .form-header { background: linear-gradient(45deg, #007bff, #0056b3); color: white; padding: 25px; text-align: center; }
-        .btn-submit { background-color: #007bff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; transition: 0.3s; }
-        .btn-submit:hover { background-color: #0056b3; transform: translateY(-2px); }
-        .input-group-text { background-color: #f8f9fa; border-left: none; }
-        .form-control { border-right: none; }
-        .form-control:focus { box-shadow: none; border-color: #007bff; }
+        body { font-family: 'Cairo', 'Tajawal', sans-serif; background-color: #f8f9fa; }
+        .kpi-card { border: none; border-radius: 15px; transition: transform 0.3s; }
+        .kpi-card:hover { transform: translateY(-5px); }
+        .loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .progress { height: 10px; border-radius: 5px; }
+        .main-chart-container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card form-card">
-                <div class="form-header">
-                    <h3 class="mb-0">إضافة سجل جديد</h3>
-                    <p class="small mb-0 mt-2">نظام Codef لإدارة البيانات الذكية</p>
-                </div>
-                <div class="card-body p-4">
-                    <form id="dataForm">
-                        <div class="mb-3">
-                            <label class="form-label">الاسم الكامل</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-user text-primary"></i></span>
-                                <input type="text" id="name" class="form-control" placeholder="أدخل الاسم" required>
-                            </div>
-                        </div>
+<div id="loader" class="loader-wrapper">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
 
-                        <div class="mb-3">
-                            <label class="form-label">رقم الجوال</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-phone text-primary"></i></span>
-                                <input type="tel" id="phone" class="form-control" placeholder="05xxxxxxxx" required>
-                            </div>
-                        </div>
+<div class="container py-4">
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="fa-solid fa-chart-line text-primary me-2"></i> متابعة خطة 2026</h2>
+        <button class="btn btn-outline-primary" onclick="loadData()"><i class="fa-solid fa-sync"></i> تحديث البيانات</button>
+    </header>
 
-                        <div class="mb-3">
-                            <label class="form-label">الحالة</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-info-circle text-primary"></i></span>
-                                <select id="status" class="form-select" required>
-                                    <option value="">اختر الحالة...</option>
-                                    <option value="مستمر">مستمر</option>
-                                    <option value="منقطع">منقطع</option>
-                                    <option value="خريج">خريج</option>
-                                </select>
-                            </div>
-                        </div>
+    <div class="row g-3 mb-4" id="kpi-containers">
+        </div>
 
-                        <div class="mb-4">
-                            <label class="form-label">عدد الأجزاء المحفوظة</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-book-open text-primary"></i></span>
-                                <input type="number" id="parts" class="form-control" min="0" max="30" placeholder="0" required>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 btn-submit" id="submitBtn">
-                            حفظ البيانات <i class="fas fa-save ms-1"></i>
-                        </button>
-                    </form>
-                </div>
+    <div class="row">
+        <div class="col-lg-12 mb-4">
+            <div class="main-chart-container">
+                <h5 class="mb-3">الأداء الشهري (مستهدف vs محقق)</h5>
+                <canvas id="performanceChart" height="100"></canvas>
             </div>
-            <p class="text-center mt-4 text-muted small">تطوير بواسطة Codef &copy; 2025</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>الشهر</th>
+                        <th>المستهدف</th>
+                        <th>المحقق</th>
+                        <th>المتبقي</th>
+                        <th>نسبة الإنجاز</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryTableBody" class="text-center">
+                    </tbody>
+            </table>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgTvCGyh8L6l2T0f_2FWxvy3JjCGyzEgVdWSvrSJk0wZ_9fy71NKapMEVCMBiwLqMB/exec";
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbx3HJJs7J2QiUJJpl40hqHwHhHvSfN_kdA4PI8E4TlDUpv8oyZ0bpS3lPXHg_cbA__F/exec';
 
-    document.getElementById('dataForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = 'جاري الحفظ... <i class="fas fa-spinner fa-spin"></i>';
+    document.addEventListener('DOMContentLoaded', loadData);
 
-        const payload = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            status: document.getElementById('status').value,
-            parts: document.getElementById('parts').value
-        };
-
+    async function loadData() {
+        showLoader(true);
         try {
-            // استخدام mode: 'no-cors' إذا واجهت مشاكل في النشر، لكن يفضل التعامل مع JSON
-            const response = await fetch(WEB_APP_URL, {
+            const response = await fetch(GAS_URL, {
                 method: 'POST',
-                mode: 'no-cors', // لضمان العمل مع Google Apps Script بسهولة
-                cache: 'no-cache',
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ action: "getSummary" })
             });
-
-            Swal.fire({
-                icon: 'success',
-                title: 'تم الحفظ بنجاح',
-                text: 'تم إضافة البيانات إلى قاعدة البيانات بنجاح.',
-                confirmButtonText: 'ممتاز'
-            });
-            document.getElementById('dataForm').reset();
-
+            const result = await response.json();
+            
+            if (result.status === "success") {
+                renderUI(result.data);
+            } else {
+                Swal.fire('خطأ', 'فشل في جلب البيانات من Google Sheets', 'error');
+            }
         } catch (error) {
-            Swal.fire('خطأ!', 'حدثت مشكلة أثناء الاتصال بالسيرفر.', 'error');
+            Swal.fire('خطأ اتصال', 'تأكد من إعدادات الـ CORS ونشر الـ API', 'error');
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'حفظ البيانات <i class="fas fa-save ms-1"></i>';
+            showLoader(false);
         }
-    });
-</script>
+    }
 
+    function renderUI(data) {
+        const tableBody = document.getElementById('summaryTableBody');
+        const kpiContainer = document.getElementById('kpi-containers');
+        tableBody.innerHTML = '';
+        
+        let totalTarget = 0, totalAchieved = 0;
+        let chartLabels = [], chartTargets = [], chartAchieved = [];
+
+        data.forEach(m => {
+            totalTarget += parseFloat(m.target || 0);
+            totalAchieved += parseFloat(m.achieved || 0);
+            
+            chartLabels.push(m.monthName);
+            chartTargets.push(m.target);
+            chartAchieved.push(m.achieved);
+
+            const percent = (m.percentage * 100).toFixed(1);
+            const statusClass = percent >= 100 ? 'bg-success' : percent > 50 ? 'bg-primary' : 'bg-warning';
+
+            tableBody.innerHTML += `
+                <tr>
+                    <td class="fw-bold">${m.monthName}</td>
+                    <td>${Number(m.target).toLocaleString()}</td>
+                    <td class="text-success fw-bold">${Number(m.achieved).toLocaleString()}</td>
+                    <td class="text-danger">${Number(m.remaining).toLocaleString()}</td>
+                    <td style="width: 200px;">
+                        <div class="d-flex align-items-center">
+                            <div class="progress w-100 me-2">
+                                <div class="progress-bar ${statusClass}" style="width: ${percent}%"></div>
+                            </div>
+                            <small>${percent}%</small>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        // تحديث الرسم البياني
+        updateChart(chartLabels, chartTargets, chartAchieved);
+        
+        // تحديث بطاقات الـ KPI العلوية (مثال لإجمالي السنة)
+        const totalPercent = ((totalAchieved / totalTarget) * 100).toFixed(1);
+        kpiContainer.innerHTML = `
+            <div class="col-md-4">
+                <div class="card kpi-card bg-white p-3 shadow-sm text-center">
+                    <p class="text-muted mb-1">إجمالي المستهدف السنوي</p>
+                    <h3 class="fw-bold text-dark">${Number(totalTarget).toLocaleString()}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card kpi-card bg-white p-3 shadow-sm text-center border-start border-primary border-4">
+                    <p class="text-muted mb-1">إجمالي المحقق</p>
+                    <h3 class="fw-bold text-primary">${Number(totalAchieved).toLocaleString()}</h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card kpi-card bg-white p-3 shadow-sm text-center">
+                    <p class="text-muted mb-1">نسبة الإنجاز الكلية</p>
+                    <h3 class="fw-bold text-success">${totalPercent}%</h3>
+                </div>
+            </div>
+        `;
+    }
+
+    function updateChart(labels, targets, achieved) {
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'المستهدف', data: targets, backgroundColor: '#e9ecef' },
+                    { label: 'المحقق', data: achieved, backgroundColor: '#0d6efd' }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+        });
+    }
+
+    function showLoader(show) {
+        document.getElementById('loader').style.display = show ? 'flex' : 'none';
+    }
+</script>
 </body>
 </html>
-
