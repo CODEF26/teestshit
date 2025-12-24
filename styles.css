@@ -1,0 +1,50 @@
+:root{
+  --bg:#f6f7fb;
+  --cardShadow: 0 10px 26px rgba(0,0,0,.06);
+  --radius: 18px;
+}
+
+body{
+  font-family: "Tajawal","Cairo",system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background: var(--bg);
+}
+
+.card-soft{
+  border:0;
+  border-radius: var(--radius);
+  box-shadow: var(--cardShadow);
+}
+
+.kpi{
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.muted{ color:#6c757d; }
+.mini{ font-size: .85rem; }
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,.80);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  backdrop-filter: blur(2px);
+}
+
+.pill{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.todayBox{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
